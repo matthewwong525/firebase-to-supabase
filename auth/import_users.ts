@@ -164,7 +164,7 @@ async function runSQL(sql: string): Promise<any> {
             if (err) {
                 console.log('runSQL error:', err);
                 console.log('sql was: ');
-                console.log(sql);
+                // console.log(sql);
                 quit();
                 reject(err);
             } else {
@@ -251,8 +251,8 @@ function createUser(user: any) {
         'authenticated', /* role character varying(255),*/
         '${user.email}', /* email character varying(255),*/
         '', /* encrypted_password character varying(255),*/
-        ${user.emailVerified ? 'NOW()' : 'null'}, /* email_confirmed_at timestamp with time zone,*/
-        '${formatDate(user.metadata.creationTime)}', /* invited_at timestamp with time zone, */
+        'NOW()', /* email_confirmed_at timestamp with time zone,*/
+        '${formatDate(user.metadata.creationTime)}'::timestamptz, /* invited_at timestamp with time zone, */
         '', /* confirmation_token character varying(255), */
         null, /* confirmation_sent_at timestamp with time zone, */
         '', /* recovery_token character varying(255), */
@@ -260,11 +260,11 @@ function createUser(user: any) {
         '', /* email_change_token_new character varying(255), */
         '', /* email_change character varying(255), */
         null, /* email_change_sent_at timestamp with time zone, */
-        null, /* last_sign_in_at timestamp with time zone, */
+        '${formatDate(user.metadata.lastSignInTime)}'::timestamptz, /* last_sign_in_at timestamp with time zone, */
         '${getProviderString(user.providerData)}', /* raw_app_meta_data jsonb,*/
         '{"fbuser":${JSON.stringify(user)}}', /* raw_user_meta_data jsonb,*/
         false, /* is_super_admin boolean, */
-        NOW(), /* created_at timestamp with time zone, */
+        '${formatDate(user.metadata.creationTime)}'::timestamptz, /* created_at timestamp with time zone, */
         NOW(), /* updated_at timestamp with time zone, */
         null, /* phone character varying(15) DEFAULT NULL::character varying, */
         null, /* phone_confirmed_at timestamp with time zone, */
